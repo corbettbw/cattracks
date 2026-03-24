@@ -1,4 +1,25 @@
-<div>
-  <h1 class="font-bold text-4xl">Sightings#new</h1>
-  <p>Find me in app/views/sightings/new.html.erb</p>
-</div>
+<h1 class="text-xl font-bold mb-6">Log a Sighting — <%= @cat.name %></h1>
+<%= form_with model: [@cat, @sighting] do |f| %>
+  <div class="space-y-4">
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <%= f.label :lat, "Latitude", class: "block text-sm font-medium mb-1" %>
+        <%= f.number_field :lat, step: "any",
+              class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+      </div>
+      <div>
+        <%= f.label :lng, "Longitude", class: "block text-sm font-medium mb-1" %>
+        <%= f.number_field :lng, step: "any",
+              class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+      </div>
+    </div>
+    <p class="text-xs text-stone-500">Tip: you can get coordinates from Google Maps by right-clicking a location.</p>
+    <div>
+      <%= f.label :body, "Notes (optional)", class: "block text-sm font-medium mb-1" %>
+      <%= f.text_area :body, rows: 3,
+            class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+    </div>
+    <%= f.submit "Log sighting",
+          class: "bg-amber-700 text-white px-4 py-2 rounded text-sm hover:bg-amber-800" %>
+  </div>
+<% end %>

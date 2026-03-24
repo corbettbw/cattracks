@@ -1,0 +1,11 @@
+<div class="flex items-center gap-3 p-3 bg-white rounded-lg border border-stone-200">
+  <% if cat.profile_photo.attached? %>
+    <%= image_tag cat.profile_photo, class: "w-12 h-12 rounded-full object-cover" %>
+  <% else %>
+    <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-xl">🐈</div>
+  <% end %>
+  <div>
+    <%= link_to cat.name, cat_path(cat), class: "font-medium hover:text-amber-700" %>
+    <p class="text-xs text-stone-500"><%= cat.status %></p>
+  </div>
+</div>

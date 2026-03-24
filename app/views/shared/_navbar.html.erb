@@ -1,0 +1,20 @@
+<nav class="bg-amber-800 text-amber-50 px-4 py-3 flex items-center justify-between">
+  <div class="flex items-center gap-6">
+    <%= link_to "🐾 Cat Tracks", root_path, class: "font-bold text-lg tracking-tight" %>
+    <% if authenticated? %>
+      <%= link_to "Feed", root_path, class: "text-sm hover:text-amber-200" %>
+      <%= link_to "Cats", cats_path, class: "text-sm hover:text-amber-200" %>
+    <% end %>
+  </div>
+  <div class="flex items-center gap-4 text-sm">
+    <% if authenticated? %>
+      <%= link_to "My Profile", profile_path, class: "hover:text-amber-200" %>
+      <%= button_to "Sign out", session_path, method: :delete,
+            class: "hover:text-amber-200 bg-transparent border-0 cursor-pointer p-0" %>
+    <% else %>
+      <%= link_to "Sign in", new_session_path, class: "hover:text-amber-200" %>
+      <%= link_to "Join", new_user_path,
+            class: "bg-amber-600 hover:bg-amber-500 px-3 py-1 rounded font-medium" %>
+    <% end %>
+  </div>
+</nav>

@@ -1,4 +1,15 @@
-<div>
-  <h1 class="font-bold text-4xl">Posts#new</h1>
-  <p>Find me in app/views/posts/new.html.erb</p>
-</div>
+<h1 class="text-xl font-bold mb-6">New Post</h1>
+<%= form_with model: @post do |f| %>
+  <div class="space-y-4">
+    <div>
+      <%= f.text_area :body, placeholder: "What's happening in the neighborhood?", rows: 4,
+            class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+    </div>
+    <div>
+      <%= f.label :photos, "Photos", class: "block text-sm font-medium mb-1" %>
+      <%= f.file_field :photos, multiple: true, accept: "image/*",
+            class: "text-sm text-stone-600" %>
+    </div>
+    <%= f.submit "Post", class: "bg-amber-700 text-white px-4 py-2 rounded text-sm hover:bg-amber-800" %>
+  </div>
+<% end %>

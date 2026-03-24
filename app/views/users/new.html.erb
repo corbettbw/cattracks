@@ -1,0 +1,44 @@
+<div class="max-w-sm mx-auto mt-12">
+  <h1 class="text-2xl font-bold mb-2 text-stone-700">Join Cat Tracks</h1>
+  <p class="text-sm text-stone-500 mb-6">
+    Create an account to track and care for cats in your neighborhood.
+  </p>
+
+  <%= form_with model: @user do |f| %>
+    <% if @user.errors.any? %>
+      <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+        <ul class="list-disc list-inside space-y-1">
+          <% @user.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="space-y-4">
+      <div>
+        <%= f.label :email_address, "Email", class: "block text-sm font-medium mb-1" %>
+        <%= f.email_field :email_address, required: true, autofocus: true,
+              class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+      </div>
+      <div>
+        <%= f.label :password, class: "block text-sm font-medium mb-1" %>
+        <%= f.password_field :password, required: true,
+              class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+      </div>
+      <div>
+        <%= f.label :password_confirmation, "Confirm password",
+              class: "block text-sm font-medium mb-1" %>
+        <%= f.password_field :password_confirmation, required: true,
+              class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+      </div>
+      <%= f.submit "Create account",
+            class: "w-full bg-amber-700 text-white py-2 rounded text-sm font-medium hover:bg-amber-800 mt-2" %>
+    </div>
+  <% end %>
+
+  <p class="text-sm text-stone-500 mt-4 text-center">
+    Already have an account?
+    <%= link_to "Sign in", new_session_path, class: "text-amber-700 hover:underline" %>
+  </p>
+</div>

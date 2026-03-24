@@ -1,4 +1,25 @@
-<div>
-  <h1 class="font-bold text-4xl">Profiles#edit</h1>
-  <p>Find me in app/views/profiles/edit.html.erb</p>
-</div>
+<h1 class="text-xl font-bold mb-6">Edit Profile</h1>
+<%= form_with model: @profile, url: profile_path, method: :patch do |f| %>  <div class="space-y-4">
+    <div>
+      <%= f.label :display_name, class: "block text-sm font-medium mb-1" %>
+      <%= f.text_field :display_name,
+            class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+    </div>
+    <div>
+      <%= f.label :zip_code, class: "block text-sm font-medium mb-1" %>
+      <%= f.text_field :zip_code,
+            class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+    </div>
+    <div>
+      <%= f.label :bio, class: "block text-sm font-medium mb-1" %>
+      <%= f.text_area :bio, rows: 4,
+            class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+    </div>
+    <div>
+      <%= f.label :photo, class: "block text-sm font-medium mb-1" %>
+      <%= f.file_field :photo, accept: "image/*",
+            class: "text-sm text-stone-600" %>
+    </div>
+    <%= f.submit "Save", class: "bg-amber-700 text-white px-4 py-2 rounded text-sm hover:bg-amber-800" %>
+  </div>
+<% end %>

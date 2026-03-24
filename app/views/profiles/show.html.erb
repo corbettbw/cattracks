@@ -1,4 +1,16 @@
-<div>
-  <h1 class="font-bold text-4xl">Profiles#show</h1>
-  <p>Find me in app/views/profiles/show.html.erb</p>
+<div class="space-y-4">
+  <div class="flex items-center gap-4">
+    <% if @profile.photo.attached? %>
+      <%= image_tag @profile.photo, class: "w-16 h-16 rounded-full object-cover" %>
+    <% else %>
+      <div class="w-16 h-16 rounded-full bg-stone-200 flex items-center justify-center text-2xl">🐾</div>
+    <% end %>
+    <div>
+      <h1 class="text-xl font-bold"><%= @profile.display_name %></h1>
+      <p class="text-sm text-stone-500"><%= @profile.zip_code %></p>
+    </div>
+  </div>
+  <p class="text-stone-700"><%= @profile.bio %></p>
+  <%= link_to "Edit profile", edit_profile_path,
+        class: "text-sm text-amber-700 hover:underline" %>
 </div>
