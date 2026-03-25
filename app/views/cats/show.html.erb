@@ -44,10 +44,11 @@
     </div>
 
     <% if @cat.sightings.any? %>
-      <%# Multi-pin map %>
+      <%# Multi-pin map — inline style required for Leaflet to detect height %>
       <div
         id="cat-sightings-map"
-        class="w-full h-64 rounded-lg overflow-hidden border border-stone-200 mb-4"
+        style="height: 256px; min-height: 256px;"
+        class="w-full rounded-lg overflow-hidden border border-stone-200 mb-4"
         data-sightings="<%= @cat.sightings.order(created_at: :desc).map { |s|
           {
             id: s.id,
@@ -90,7 +91,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  document.addEventListener("turbo:load", function () {
+  function initCatMap() {
     const el = document.getElementById("cat-sightings-map");
     if (!el || el._leaflet_id) return;
 
@@ -129,5 +130,8 @@
       const bounds = L.latLngBounds(sightings.map(s => [s.lat, s.lng]));
       map.fitBounds(bounds, { padding: [30, 30] });
     }
-  });
+  }
+
+  document.addEventListener("turbo:load", initCatMap);
+  document.addEventListener("DOMContentLoaded", initCatMap);
 </script>

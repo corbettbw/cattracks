@@ -1,5 +1,13 @@
 <div class="bg-white border border-stone-200 rounded-lg p-4 space-y-2">
   <div class="flex items-center gap-2 text-sm text-stone-500">
+  <%# Profile photo %>
+    <% profile = post.user&.profile %>
+    <% if profile&.photo&.attached? %>
+      <%= image_tag profile.photo, class: "w-8 h-8 rounded-full object-cover" %>
+    <% else %>
+      <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-sm">🐾</div>
+    <% end %>
+    
     <span class="font-medium text-stone-700">
       <%= post.user&.profile&.display_name || "Anonymous" %>
     </span>

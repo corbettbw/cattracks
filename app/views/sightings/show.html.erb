@@ -8,7 +8,8 @@
   <% if @sighting.lat.present? && @sighting.lng.present? %>
     <div
       id="map-<%= @sighting.id %>"
-      class="w-full h-48 rounded-lg overflow-hidden border border-stone-200"
+      style="height: 200px; min-height: 200px;"
+      class="w-full rounded-lg overflow-hidden border border-stone-200"
       data-lat="<%= @sighting.lat %>"
       data-lng="<%= @sighting.lng %>">
     </div>
@@ -24,7 +25,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  document.addEventListener("turbo:load", function () {
+  function initSightingMap() {
     const el = document.getElementById("map-<%= @sighting.id %>");
     if (!el || el._leaflet_id) return;
 
@@ -46,5 +47,8 @@
     }).addTo(map);
 
     L.marker([lat, lng]).addTo(map);
-  });
+  }
+
+  document.addEventListener("turbo:load", initSightingMap);
+  document.addEventListener("DOMContentLoaded", initSightingMap);
 </script>
