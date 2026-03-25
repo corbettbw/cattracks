@@ -2,28 +2,49 @@
   <div class="flex items-center gap-2 text-sm text-stone-500">
     <%= link_to @cat.name, cat_path(@cat), class: "text-amber-700 hover:underline font-medium" %>
     <span>·</span>
-    <span>Sighting by <%= @sighting.user&.profile&.display_name || "Anonymous" %></span>
-    <span>·</span>
-    <span><%= time_ago_in_words(@sighting.created_at) %> ago</span>
+    <span>Sighting</span>
   </div>
 
-  <% if @sighting.photo.attached? %>
-    <%= image_tag @sighting.photo, class: "w-full rounded-xl object-cover max-h-96" %>
-  <% end %>
-
-  <% if @sighting.body.present? %>
-    <p class="text-stone-800"><%= @sighting.body %></p>
-  <% end %>
-
-  <p class="text-sm text-stone-400">📍 <%= @sighting.lat %>, <%= @sighting.lng %></p>
-
-  <% if @sighting.user == Current.user %>
-    <div class="flex gap-4 pt-2 border-t border-stone-100">
-      <%= link_to "Edit", edit_cat_sighting_path(@cat, @sighting),
-            class: "text-sm text-amber-700 hover:underline" %>
-      <%= button_to "Delete", cat_sighting_path(@cat, @sighting), method: :delete,
-            data: { turbo_confirm: "Remove this sighting?" },
-            class: "text-sm text-red-600 hover:underline bg-transparent border-0 cursor-pointer p-0" %>
+  <% if @sighting.lat.present? && @sighting.lng.present? %>
+    <div
+      id="map-<%= @sighting.id %>"
+      class="w-full h-48 rounded-lg overflow-hidden border border-stone-200"
+      data-lat="<%= @sighting.lat %>"
+      data-lng="<%= @sighting.lng %>">
     </div>
   <% end %>
+
+  <%= render "sightings/sighting", sighting: @sighting, sighting_link: false %>
+
+  <div class="mt-2">
+    <%= link_to "← Back to #{@cat.name}", cat_path(@cat), class: "text-sm text-stone-500 hover:underline" %>
+  </div>
 </div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  document.addEventListener("turbo:load", function () {
+    const el = document.getElementById("map-<%= @sighting.id %>");
+    if (!el || el._leaflet_id) return;
+
+    const lat = parseFloat(el.dataset.lat);
+    const lng = parseFloat(el.dataset.lng);
+
+    const map = L.map(el.id, {
+      zoomControl: false,
+      dragging: false,
+      scrollWheelZoom: false,
+      doubleClickZoom: false,
+      boxZoom: false,
+      keyboard: false,
+      touchZoom: false
+    }).setView([lat, lng], 15);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap"
+    }).addTo(map);
+
+    L.marker([lat, lng]).addTo(map);
+  });
+</script>

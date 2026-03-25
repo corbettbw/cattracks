@@ -1,0 +1,26 @@
+<div class="text-sm bg-stone-50 border border-stone-200 rounded-lg overflow-hidden">
+  <div class="p-3 space-y-2">
+    <% if sighting.photo.attached? %>
+      <%= image_tag sighting.photo, class: "w-full rounded object-cover max-h-48" %>
+    <% end %>
+
+    <% if sighting.body.present? %>
+      <p class="text-stone-600"><%= sighting.body %></p>
+    <% end %>
+
+    <div class="flex justify-between text-stone-400 text-xs pt-1">
+      <span><%= sighting.user&.profile&.display_name || "Anonymous" %></span>
+      <span><%= time_ago_in_words(sighting.created_at) %> ago</span>
+    </div>
+
+    <% if sighting.user == Current.user %>
+      <div class="flex gap-3 pt-1 border-t border-stone-100">
+        <%= link_to "Edit", edit_cat_sighting_path(sighting.cat, sighting),
+              class: "text-xs text-amber-700 hover:underline" %>
+        <%= button_to "Delete", cat_sighting_path(sighting.cat, sighting), method: :delete,
+              data: { turbo_confirm: "Remove this sighting?" },
+              class: "text-xs text-red-500 hover:underline bg-transparent border-0 cursor-pointer p-0" %>
+      </div>
+    <% end %>
+  </div>
+</div>

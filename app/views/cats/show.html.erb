@@ -32,35 +32,42 @@
       </div>
     <% else %>
       <p class="text-sm text-stone-500">No caregivers yet.</p>
-      <%= link_to "Claim this cat", claim_cat_path(@cat), method: :post,
-            class: "text-sm text-amber-700 hover:underline" %>
     <% end %>
   </div>
 
-  <%# Sightings placeholder %>
+  <%# Sightings %>
   <div>
     <div class="flex items-center justify-between mb-2">
       <h2 class="font-semibold">Sightings</h2>
       <%= link_to "+ Log a sighting", new_cat_sighting_path(@cat),
             class: "text-sm text-amber-700 hover:underline" %>
     </div>
+
     <% if @cat.sightings.any? %>
-      <div class="space-y-2">
+      <%# Multi-pin map %>
+      <div
+        id="cat-sightings-map"
+        class="w-full h-64 rounded-lg overflow-hidden border border-stone-200 mb-4"
+        data-sightings="<%= @cat.sightings.order(created_at: :desc).map { |s|
+          {
+            id: s.id,
+            lat: s.lat,
+            lng: s.lng,
+            body: s.body,
+            time: time_ago_in_words(s.created_at),
+            url: cat_sighting_path(@cat, s),
+            photo: s.photo.attached? ? url_for(s.photo) : nil
+          }
+        }.to_json %>">
+      </div>
+
+      <%# Sighting cards %>
+      <div class="space-y-3">
         <% @cat.sightings.order(created_at: :desc).each do |sighting| %>
-        <div class="text-sm bg-stone-50 border border-stone-200 rounded p-3 space-y-2">
-          <div class="flex justify-between text-stone-500">
-            <span><%= sighting.user&.profile&.display_name || "Anonymous" %></span>
-            <span><%= time_ago_in_words(sighting.created_at) %> ago</span>
-          </div>
-          <% if sighting.body.present? %>
-            <p class="text-stone-600"><%= sighting.body %></p>
+          <%= link_to cat_sighting_path(@cat, sighting), class: "block hover:opacity-90 transition-opacity" do %>
+            <%= render "sightings/sighting", sighting: sighting, sighting_link: false %>
           <% end %>
-          <% if sighting.photo.attached? %>
-            <%= image_tag sighting.photo, class: "w-full rounded object-cover max-h-48" %>
-          <% end %>
-          <p class="text-xs text-stone-400">📍 <%= sighting.lat %>, <%= sighting.lng %></p>
-        </div>
-      <% end %>
+        <% end %>
       </div>
     <% else %>
       <p class="text-sm text-stone-500">No sightings logged yet.</p>
@@ -79,3 +86,48 @@
     </div>
   <% end %>
 </div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  document.addEventListener("turbo:load", function () {
+    const el = document.getElementById("cat-sightings-map");
+    if (!el || el._leaflet_id) return;
+
+    const sightings = JSON.parse(el.dataset.sightings);
+    if (!sightings.length) return;
+
+    const first = sightings[0];
+    const map = L.map("cat-sightings-map", {
+      zoomControl: true,
+      dragging: true,
+      scrollWheelZoom: false
+    }).setView([first.lat, first.lng], 14);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap"
+    }).addTo(map);
+
+    sightings.forEach(function (s) {
+      const marker = L.marker([s.lat, s.lng]).addTo(map);
+
+      let popupHtml = '<div style="max-width:180px">';
+      if (s.photo) {
+        popupHtml += `<a href="${s.url}"><img src="${s.photo}" style="width:100%;border-radius:6px;margin-bottom:6px;object-fit:cover;max-height:100px"></a>`;
+      }
+      if (s.body) {
+        popupHtml += `<p style="font-size:12px;margin:0 0 4px">${s.body}</p>`;
+      }
+      popupHtml += `<p style="font-size:11px;color:#aaa;margin:0 0 6px">${s.time} ago</p>`;
+      popupHtml += `<a href="${s.url}" style="font-size:12px;color:#b45309;text-decoration:underline">View sighting →</a>`;
+      popupHtml += '</div>';
+
+      marker.bindPopup(popupHtml);
+    });
+
+    if (sightings.length > 1) {
+      const bounds = L.latLngBounds(sightings.map(s => [s.lat, s.lng]));
+      map.fitBounds(bounds, { padding: [30, 30] });
+    }
+  });
+</script>
