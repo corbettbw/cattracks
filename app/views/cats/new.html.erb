@@ -1,4 +1,42 @@
-<div>
-  <h1 class="font-bold text-4xl">Cats#new</h1>
-  <p>Find me in app/views/cats/new.html.erb</p>
+<div class="max-w-lg mx-auto mt-8">
+  <h1 class="text-2xl font-bold mb-6">Add a Cat</h1>
+  <%= form_with model: @cat, multipart: true do |f| %>
+    <% if @cat.errors.any? %>
+      <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+        <ul class="list-disc list-inside space-y-1">
+          <% @cat.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="space-y-4">
+      <div>
+        <%= f.label :name, class: "block text-sm font-medium mb-1" %>
+        <%= f.text_field :name, required: true,
+              class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+      </div>
+      <div>
+        <%= f.label :status, class: "block text-sm font-medium mb-1" %>
+        <%= f.select :status,
+              [["Feral", "feral"], ["Stray", "stray"], ["Community cat", "community"]],
+              { include_blank: "— select one —" },
+              class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+      </div>
+      <div>
+        <%= f.label :bio, "About this cat", class: "block text-sm font-medium mb-1" %>
+        <%= f.text_area :bio, rows: 3,
+              class: "w-full border border-stone-300 rounded px-3 py-2 text-sm",
+              placeholder: "Approximate age, coloring, personality, usual hangout spots..." %>
+      </div>
+      <div>
+        <%= f.label :profile_photo, "Profile photo", class: "block text-sm font-medium mb-1" %>
+        <%= f.file_field :profile_photo, accept: "image/*",
+              class: "text-sm text-stone-600" %>
+      </div>
+      <%= f.submit "Add cat",
+            class: "w-full bg-amber-700 text-white py-2 rounded text-sm font-medium hover:bg-amber-800 mt-2" %>
+    </div>
+  <% end %>
 </div>

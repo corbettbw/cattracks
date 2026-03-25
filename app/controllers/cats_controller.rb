@@ -2,8 +2,7 @@ class CatsController < ApplicationController
   before_action :set_cat, only: [:show, :edit, :update, :destroy]
 
   def index
-    user_zip = Current.user.profile&.zip_code
-    @cats = user_zip ? Cat.where(zip_code: user_zip) : Cat.all
+    @cats = Cat.all
     @unclaimed_cats = @cats.unclaimed
     @cats = @cats.where.not(id: @unclaimed_cats)
   end

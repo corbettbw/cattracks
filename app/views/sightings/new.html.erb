@@ -1,25 +1,94 @@
-<h1 class="text-xl font-bold mb-6">Log a Sighting — <%= @cat.name %></h1>
-<%= form_with model: [@cat, @sighting] do |f| %>
-  <div class="space-y-4">
-    <div class="grid grid-cols-2 gap-4">
+<div class="max-w-lg mx-auto mt-8">
+  <h1 class="text-2xl font-bold mb-6">Log a Sighting — <%= @cat.name %></h1>
+
+  <%= form_with model: [@cat, @sighting], multipart: true do |f| %>
+    <% if @sighting.errors.any? %>
+      <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+        <ul class="list-disc list-inside space-y-1">
+          <% @sighting.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="space-y-4">
+
+      <%# Map pin picker %>
       <div>
-        <%= f.label :lat, "Latitude", class: "block text-sm font-medium mb-1" %>
-        <%= f.number_field :lat, step: "any",
+        <label class="block text-sm font-medium mb-1">Where did you see <%= @cat.name %>?</label>
+        <p class="text-xs text-stone-500 mb-2">Click the map to drop a pin.</p>
+        <div id="sighting-map" class="w-full h-64 rounded-lg border border-stone-300 z-0"></div>
+        <p id="pin-hint" class="text-xs text-stone-400 mt-1">No location selected yet.</p>
+      </div>
+
+      <%# Hidden lat/lng fields populated by map click %>
+      <%= f.hidden_field :lat, id: "sighting-lat" %>
+      <%= f.hidden_field :lng, id: "sighting-lng" %>
+
+      <%# Notes %>
+      <div>
+        <%= f.label :body, "Notes (optional)", class: "block text-sm font-medium mb-1" %>
+        <%= f.text_area :body, rows: 3,
+              placeholder: "Any notes about the cat's condition, behavior, etc.",
               class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
       </div>
+
+      <%# Photo %>
       <div>
-        <%= f.label :lng, "Longitude", class: "block text-sm font-medium mb-1" %>
-        <%= f.number_field :lng, step: "any",
-              class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+        <%= f.label :photo, "Photo (optional)", class: "block text-sm font-medium mb-1" %>
+        <%= f.file_field :photo, accept: "image/*",
+              class: "text-sm text-stone-600" %>
       </div>
+
+      <%= f.submit "Log sighting",
+            id: "sighting-submit",
+            class: "w-full bg-amber-700 text-white py-2 rounded text-sm font-medium hover:bg-amber-800" %>
     </div>
-    <p class="text-xs text-stone-500">Tip: you can get coordinates from Google Maps by right-clicking a location.</p>
-    <div>
-      <%= f.label :body, "Notes (optional)", class: "block text-sm font-medium mb-1" %>
-      <%= f.text_area :body, rows: 3,
-            class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
-    </div>
-    <%= f.submit "Log sighting",
-          class: "bg-amber-700 text-white px-4 py-2 rounded text-sm hover:bg-amber-800" %>
-  </div>
-<% end %>
+  <% end %>
+</div>
+
+<%# Leaflet CSS and JS %>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const latField = document.getElementById("sighting-lat");
+    const lngField = document.getElementById("sighting-lng");
+    const hint = document.getElementById("pin-hint");
+
+    // Default center — will use browser geolocation if available, else Phoenix
+    const defaultLat = 33.4484;
+    const defaultLng = -112.0740;
+
+    const map = L.map("sighting-map").setView([defaultLat, defaultLng], 13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap contributors"
+    }).addTo(map);
+
+    let marker = null;
+
+    // Try to center on user's location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        map.setView([pos.coords.latitude, pos.coords.longitude], 15);
+      });
+    }
+
+    map.on("click", function (e) {
+      const { lat, lng } = e.latlng;
+
+      if (marker) {
+        marker.setLatLng(e.latlng);
+      } else {
+        marker = L.marker(e.latlng).addTo(map);
+      }
+
+      latField.value = lat.toFixed(6);
+      lngField.value = lng.toFixed(6);
+      hint.textContent = `📍 ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    });
+  });
+</script>

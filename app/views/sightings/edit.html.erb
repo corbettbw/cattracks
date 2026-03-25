@@ -1,0 +1,70 @@
+<div class="max-w-lg mx-auto mt-8">
+  <h1 class="text-2xl font-bold mb-6">Edit Sighting — <%= @cat.name %></h1>
+
+  <%= form_with model: [@cat, @sighting], multipart: true do |f| %>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium mb-1">Location</label>
+        <p class="text-xs text-stone-500 mb-2">Click to move the pin.</p>
+        <div id="sighting-map" class="w-full h-64 rounded-lg border border-stone-300"></div>
+        <p id="pin-hint" class="text-xs text-stone-400 mt-1">
+          📍 <%= @sighting.lat %>, <%= @sighting.lng %>
+        </p>
+      </div>
+
+      <%= f.hidden_field :lat, id: "sighting-lat" %>
+      <%= f.hidden_field :lng, id: "sighting-lng" %>
+
+      <div>
+        <%= f.label :body, "Notes", class: "block text-sm font-medium mb-1" %>
+        <%= f.text_area :body, rows: 3,
+              class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+      </div>
+
+      <div>
+        <% if @sighting.photo.attached? %>
+          <div class="mb-2">
+            <%= image_tag @sighting.photo, class: "h-32 rounded object-cover" %>
+          </div>
+        <% end %>
+        <%= f.label :photo, "Replace photo", class: "block text-sm font-medium mb-1" %>
+        <%= f.file_field :photo, accept: "image/*", class: "text-sm text-stone-600" %>
+      </div>
+
+      <%= f.submit "Save changes",
+            class: "w-full bg-amber-700 text-white py-2 rounded text-sm font-medium hover:bg-amber-800" %>
+    </div>
+  <% end %>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const latField = document.getElementById("sighting-lat");
+    const lngField = document.getElementById("sighting-lng");
+    const hint = document.getElementById("pin-hint");
+
+    const existingLat = <%= @sighting.lat || 33.4484 %>;
+    const existingLng = <%= @sighting.lng || -112.0740 %>;
+
+    const map = L.map("sighting-map").setView([existingLat, existingLng], 15);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap contributors"
+    }).addTo(map);
+
+    let marker = L.marker([existingLat, existingLng]).addTo(map);
+    latField.value = existingLat;
+    lngField.value = existingLng;
+
+    map.on("click", function (e) {
+      const { lat, lng } = e.latlng;
+      marker.setLatLng(e.latlng);
+      latField.value = lat.toFixed(6);
+      lngField.value = lng.toFixed(6);
+      hint.textContent = `📍 ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    });
+  });
+</script>

@@ -1,5 +1,6 @@
 class Post < ApplicationRecord
   belongs_to :user, optional: true
+  belongs_to :sighting, optional: true
   has_many :cat_tags, dependent: :destroy
   has_many :cats, through: :cat_tags
   has_many :user_tags, dependent: :destroy
