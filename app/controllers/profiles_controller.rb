@@ -9,7 +9,11 @@ class ProfilesController < ApplicationController
 
   def update
     if @profile.update(profile_params)
-      redirect_to profile_path, notice: "Profile updated"
+      if @profile.display_name.present? && @profile.zip_code.present?
+        redirect_to root_path, notice: "Profile saved! Welcome to Cat Tracks."
+      else
+        redirect_to edit_profile_path, alert: "Please fill in your display name and zip code to continue."
+      end
     else
       render :edit, status: :unprocessable_entity
     end

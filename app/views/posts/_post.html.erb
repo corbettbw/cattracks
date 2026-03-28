@@ -7,7 +7,7 @@
     <% else %>
       <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-sm">🐾</div>
     <% end %>
-    
+
     <span class="font-medium text-stone-700">
       <%= post.user&.profile&.display_name || "Anonymous" %>
     </span>
@@ -15,6 +15,8 @@
     <span><%= time_ago_in_words(post.created_at) %> ago</span>
     <% if post.sighting? %>
       <span class="ml-auto text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">sighting</span>
+    <% elsif post.new_cat? %>
+        <span class="ml-auto text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">new cat</span>
     <% end %>
   </div>
 
@@ -27,16 +29,21 @@
         <%= image_tag sighting.photo, class: "w-full rounded-lg object-cover max-h-72 cursor-pointer" %>
       <% end %>
     <% end %>
-    <p class="text-xs text-stone-400">📍 <%= sighting.lat %>, <%= sighting.lng %></p>
   <% end %>
 
-  <% if post.microblog? && post.photos.attached? %>
+    <% if (post.microblog? || post.new_cat?) && post.photos.attached? %>
     <div class="flex gap-2 flex-wrap mt-2">
-      <% post.photos.each do |photo| %>
-        <%= image_tag photo, class: "h-48 w-auto rounded object-cover" %>
-      <% end %>
+        <% post.photos.each do |photo| %>
+        <% if post.cats.first %>
+            <%= link_to cat_path(post.cats.first) do %>
+            <%= image_tag photo, class: "w-full rounded-lg object-cover max-h-72 cursor-pointer" %>
+            <% end %>
+        <% else %>
+            <%= image_tag photo, class: "w-full rounded-lg object-cover max-h-72" %>
+        <% end %>
+        <% end %>
     </div>
-  <% end %>
+    <% end %>
 
   <% if post.cats.any? %>
     <div class="flex gap-1 flex-wrap">

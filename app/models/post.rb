@@ -7,7 +7,7 @@ class Post < ApplicationRecord
   has_many :tagged_users, through: :user_tags, source: :tagged_user
   has_many_attached :photos
 
-  enum :post_type, { microblog: 0, sighting: 1 }
+  enum :post_type, { microblog: 0, sighting: 1, new_cat: 2 }
 
   validates :body, presence: true
   validates :post_type, presence: true

@@ -30,8 +30,20 @@
           </span>
         <% end %>
       </div>
+      <div class="mt-2 flex gap-3">
+        <% if @cat.caregivers.include?(Current.user) %>
+          <%= button_to "Leave as caregiver", leave_cat_path(@cat), method: :delete,
+                data: { turbo_confirm: "Are you sure? You'll need to be re-added by another caregiver." },
+                class: "text-sm text-red-600 border border-red-300 px-3 py-1 rounded hover:bg-red-50" %>
+        <% else %>
+          <%= button_to "Become a caregiver", claim_cat_path(@cat),
+                class: "text-sm text-amber-700 border border-amber-700 px-3 py-1 rounded hover:bg-amber-50" %>
+        <% end %>
+      </div>
     <% else %>
-      <p class="text-sm text-stone-500">No caregivers yet.</p>
+      <p class="text-sm text-stone-500 mb-2">No caregivers yet.</p>
+      <%= button_to "Claim this cat", claim_cat_path(@cat),
+            class: "text-sm bg-amber-700 text-white px-3 py-1 rounded hover:bg-amber-800" %>
     <% end %>
   </div>
 

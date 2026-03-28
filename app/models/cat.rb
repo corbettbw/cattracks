@@ -9,7 +9,23 @@ class Cat < ApplicationRecord
     has_one_attached :profile_photo
     has_many_attached :pictures
 
-  scope :unclaimed, -> { where(created_by: nil) }
+    scope :unclaimed, -> { where(created_by: nil) }
 
-  validates :name, presence: true
+    validates :name, presence: true
+    after_create :generate_post
+
+    private
+
+    def generate_post
+        return unless creator
+        post = creator.posts.create!(
+        body: "#{creator.profile&.display_name || "Someone"} added #{name} to Cat Tracks!",
+        post_type: :new_cat
+        )
+        post.cat_tags.create!(cat: self)
+        
+        if profile_photo.attached?
+            post.photos.attach(profile_photo.blob)
+        end
+    end
 end

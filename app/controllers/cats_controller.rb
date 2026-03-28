@@ -1,5 +1,5 @@
 class CatsController < ApplicationController
-  before_action :set_cat, only: [:show, :edit, :update, :destroy]
+  before_action :set_cat, only: [:show, :edit, :update, :destroy, :claim, :leave]
 
   def index
     @cats = Cat.all
@@ -44,6 +44,24 @@ class CatsController < ApplicationController
     redirect_to cats_path, notice: "Cat profile removed"
   end
 
+  def claim
+    if @cat.caregivers.include?(Current.user)
+      redirect_to @cat, alert: "You're already a caregiver for #{@cat.name}"
+    else
+      Current.user.care_relationships.create!(cat: @cat, role: "caregiver")
+      redirect_to @cat, notice: "You're now a caregiver for #{@cat.name}!"
+    end
+  end
+  
+  def leave
+    relationship = Current.user.care_relationships.find_by(cat: @cat)
+    if relationship
+      relationship.destroy
+      redirect_to @cat, notice: "You're no longer a caregiver for #{@cat.name}"
+    else
+      redirect_to @cat, alert: "You weren't listed as a caregiver for #{@cat.name}"
+    end
+  end
   private
 
   def set_cat

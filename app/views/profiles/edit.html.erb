@@ -1,25 +1,57 @@
-<h1 class="text-xl font-bold mb-6">Edit Profile</h1>
-<%= form_with model: @profile, url: profile_path, method: :patch do |f| %>  <div class="space-y-4">
-    <div>
-      <%= f.label :display_name, class: "block text-sm font-medium mb-1" %>
-      <%= f.text_field :display_name,
-            class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+<div class="max-w-sm mx-auto mt-12">
+  <% unless Current.user.profile&.display_name.present? && Current.user.profile&.zip_code.present? %>
+    <div class="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+      <p class="text-sm text-amber-800 font-medium">Almost there!</p>
+      <p class="text-sm text-amber-700 mt-1">
+        Set your display name and zip code to start using Cat Tracks.
+        Your zip code determines which neighborhood posts you see in your feed.
+      </p>
     </div>
-    <div>
-      <%= f.label :zip_code, class: "block text-sm font-medium mb-1" %>
-      <%= f.text_field :zip_code,
-            class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+  <% end %>
+
+  <h1 class="text-2xl font-bold mb-6 text-stone-700">
+    <%= Current.user.profile&.display_name.present? ? "Edit Profile" : "Set Up Your Profile" %>
+  </h1>
+
+  <%= form_with model: @profile, url: profile_path, method: :patch, multipart: true do |f| %>
+    <% if @profile.errors.any? %>
+      <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+        <ul class="list-disc list-inside space-y-1">
+          <% @profile.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="space-y-4">
+      <div>
+        <%= f.label :display_name, class: "block text-sm font-medium mb-1" %>
+        <%= f.text_field :display_name,
+              class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+      </div>
+      <div>
+        <%= f.label :zip_code, class: "block text-sm font-medium mb-1" %>
+        <%= f.text_field :zip_code,
+              class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+        <p class="text-xs text-stone-400 mt-1">Used to show you posts from your neighborhood.</p>
+      </div>
+      <div>
+        <%= f.label :bio, class: "block text-sm font-medium mb-1" %>
+        <%= f.text_area :bio, rows: 4,
+              class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+      </div>
+      <div>
+        <%= f.label :photo, class: "block text-sm font-medium mb-1" %>
+        <% if @profile.photo.attached? %>
+          <div class="mb-2">
+            <%= image_tag @profile.photo, class: "w-16 h-16 rounded-full object-cover" %>
+          </div>
+        <% end %>
+        <%= f.file_field :photo, accept: "image/*", class: "text-sm text-stone-600" %>
+      </div>
+      <%= f.submit Current.user.profile&.display_name.present? ? "Save changes" : "Let's go →",
+            class: "w-full bg-amber-700 text-white py-2 rounded text-sm font-medium hover:bg-amber-800 mt-2" %>
     </div>
-    <div>
-      <%= f.label :bio, class: "block text-sm font-medium mb-1" %>
-      <%= f.text_area :bio, rows: 4,
-            class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
-    </div>
-    <div>
-      <%= f.label :photo, class: "block text-sm font-medium mb-1" %>
-      <%= f.file_field :photo, accept: "image/*",
-            class: "text-sm text-stone-600" %>
-    </div>
-    <%= f.submit "Save", class: "bg-amber-700 text-white px-4 py-2 rounded text-sm hover:bg-amber-800" %>
-  </div>
-<% end %>
+  <% end %>
+</div>
