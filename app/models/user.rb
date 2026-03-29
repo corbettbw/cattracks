@@ -16,9 +16,10 @@ class User < ApplicationRecord
   private
 
   def initialize_profile
-    create_profile(
+    profile = build_profile(
       display_name: email_address.split("@").first,
       zip_code: ""
     )
+    profile.save(validate: false)
   end
 end

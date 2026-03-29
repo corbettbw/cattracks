@@ -14,15 +14,15 @@
   </h1>
 
   <%= form_with model: @profile, url: profile_path, method: :patch, multipart: true do |f| %>
-    <% if @profile.errors.any? %>
-      <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
-        <ul class="list-disc list-inside space-y-1">
-          <% @profile.errors.full_messages.each do |msg| %>
-            <li><%= msg %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
+<% if @profile.errors.any? && request.patch? %>
+  <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+    <ul class="list-disc list-inside space-y-1">
+      <% @profile.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
 
     <div class="space-y-4">
       <div>
