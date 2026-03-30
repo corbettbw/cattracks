@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_25_200614) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_30_204955) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -69,6 +69,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_25_200614) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_by"], name: "index_cats_on_created_by"
+  end
+
+  create_table "follows", force: :cascade do |t|
+    t.integer "follower_id"
+    t.integer "followed_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "posts", force: :cascade do |t|

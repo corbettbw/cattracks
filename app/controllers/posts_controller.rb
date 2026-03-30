@@ -2,13 +2,25 @@ class PostsController < ApplicationController
   before_action :set_post, only: [:show, :destroy]
 
   def index
-    user_zip = Current.user.profile&.zip_code
-    @posts = if user_zip
-      Post.joins(user: :profile)
-          .where(profiles: { zip_code: user_zip })
-          .order(created_at: :desc)
+    @mode = params[:mode] == "following" ? :following : :local
+
+    @posts = if @mode == :following
+      followed_ids = Current.user.following.pluck(:id)
+      if followed_ids.any?
+        Post.where(user_id: followed_ids)
+            .order(created_at: :desc)
+      else
+        Post.none
+      end
     else
-      Post.order(created_at: :desc)
+      user_zip = Current.user.profile&.zip_code
+      if user_zip.present?
+        Post.joins(user: :profile)
+            .where(profiles: { zip_code: user_zip })
+            .order(created_at: :desc)
+      else
+        Post.order(created_at: :desc)
+      end
     end
   end
 

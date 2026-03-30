@@ -49,6 +49,7 @@
     L.marker([lat, lng]).addTo(map);
   }
 
-  document.addEventListener("turbo:load", initSightingMap);
-  document.addEventListener("DOMContentLoaded", initSightingMap);
+    document.addEventListener("turbo:load", initSightingMap);
+    document.addEventListener("turbo:render", initMaps);
+    document.addEventListener("DOMContentLoaded", initSightingMap);
 </script>

@@ -13,6 +13,12 @@ class User < ApplicationRecord
   has_many :cats, through: :care_relationships
   has_many :created_cats, class_name: "Cat", foreign_key: :created_by, dependent: :nullify
 
+  has_many :follows, foreign_key: :follower_id, dependent: :destroy
+  has_many :following, through: :follows, source: :followed
+
+  has_many :reverse_follows, class_name: "Follow", foreign_key: :followed_id, dependent: :destroy
+  has_many :followers, through: :reverse_follows, source: :follower
+  
   private
 
   def initialize_profile
