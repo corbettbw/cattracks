@@ -15,6 +15,18 @@ class UsersController < ApplicationController
     end
   end
 
+  def show
+    @user = User.find(params[:id])
+    @profile = @user.profile
+    @cats = @user.cats.includes(:profile_photo_attachment)
+    @posts = @user.posts
+                  .where(post_type: [:microblog, :new_cat])
+                  .order(created_at: :desc)
+    @tagged_posts = Post.joins(:user_tags)
+                        .where(user_tags: { tagged_user: @user.id })
+                        .order(created_at: :desc)
+  end
+
   private
 
   def user_params

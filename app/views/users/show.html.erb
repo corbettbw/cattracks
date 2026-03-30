@@ -1,0 +1,69 @@
+<div class="space-y-8">
+
+  <%# Header %>
+  <div class="flex items-start gap-4">
+    <% if @profile&.photo&.attached? %>
+      <%= image_tag @profile.photo, class: "w-20 h-20 rounded-full object-cover" %>
+    <% else %>
+      <div class="w-20 h-20 rounded-full bg-amber-100 flex items-center justify-center text-3xl">🐾</div>
+    <% end %>
+    <div class="flex-1">
+      <h1 class="text-2xl font-bold"><%= @profile&.display_name || "Anonymous" %></h1>
+      <p class="text-sm text-stone-500"><%= @profile&.zip_code %></p>
+      <% if @profile&.bio.present? %>
+        <p class="text-stone-700 mt-1"><%= @profile.bio %></p>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Their cats %>
+  <% if @cats.any? %>
+    <div>
+      <h2 class="font-semibold mb-3">Cats</h2>
+      <div class="grid grid-cols-2 gap-3">
+        <% @cats.each do |cat| %>
+          <%= link_to cat_path(cat), class: "flex items-center gap-3 p-3 bg-white border border-stone-200 rounded-lg hover:border-amber-300 transition-colors" do %>
+            <% if cat.profile_photo.attached? %>
+              <%= image_tag cat.profile_photo, class: "w-10 h-10 rounded-full object-cover" %>
+            <% else %>
+              <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">🐈</div>
+            <% end %>
+            <div>
+              <p class="text-sm font-medium"><%= cat.name %></p>
+              <p class="text-xs text-stone-400 capitalize"><%= cat.status %></p>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# Their posts %>
+  <div>
+    <h2 class="font-semibold mb-3">Posts</h2>
+    <% if @posts.any? %>
+      <div class="space-y-3">
+        <% @posts.each do |post| %>
+          <%= render "posts/post", post: post %>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm text-stone-500">No posts yet.</p>
+    <% end %>
+  </div>
+
+  <%# Posts they've been tagged in %>
+  <div>
+    <h2 class="font-semibold mb-3">Tagged in</h2>
+    <% if @tagged_posts.any? %>
+      <div class="space-y-3">
+        <% @tagged_posts.each do |post| %>
+          <%= render "posts/post", post: post %>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm text-stone-500">No tagged posts yet.</p>
+    <% end %>
+  </div>
+
+</div>

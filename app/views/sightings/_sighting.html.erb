@@ -9,7 +9,13 @@
     <% end %>
 
     <div class="flex justify-between text-stone-400 text-xs pt-1">
-      <span><%= sighting.user&.profile&.display_name || "Anonymous" %></span>
+      <% if sighting.user %>
+        <%= link_to sighting.user&.profile&.display_name || "Anonymous",
+              user_path(sighting.user),
+              class: "hover:text-amber-700" %>
+      <% else %>
+        <span>Anonymous</span>
+      <% end %>
       <span><%= time_ago_in_words(sighting.created_at) %> ago</span>
     </div>
 

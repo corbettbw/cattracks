@@ -1,10 +1,8 @@
 Rails.application.routes.draw do
   root "posts#index"
-  get "users/new"
-  get "users/create"
   resource :session
   resources :passwords, param: :token
-  resources :users, only: [:new, :create]
+  resources :users, only: [:new, :create, :show]
   resource :profile, only: [:show, :edit, :update, :destroy]
   resources :cats do
     member do
