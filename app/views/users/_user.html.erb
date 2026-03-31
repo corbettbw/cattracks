@@ -1,0 +1,11 @@
+<%= link_to user_path(user), class: "flex items-center gap-3 p-3 bg-white border border-stone-200 rounded-lg hover:border-amber-300 transition-colors" do %>
+  <% if user.profile&.photo&.attached? %>
+    <%= image_tag user.profile.photo, class: "w-10 h-10 rounded-full object-cover" %>
+  <% else %>
+    <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">🐾</div>
+  <% end %>
+  <div>
+    <p class="text-sm font-medium"><%= user.profile&.display_name || "Anonymous" %></p>
+    <p class="text-xs text-stone-400"><%= user.profile&.zip_code %></p>
+  </div>
+<% end %>

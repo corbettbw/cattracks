@@ -6,6 +6,8 @@ Rails.application.routes.draw do
     member do
       post :follow
       delete :unfollow
+      get :followers
+      get :following
     end
   end
   resource :profile, only: [:show, :edit, :update, :destroy]

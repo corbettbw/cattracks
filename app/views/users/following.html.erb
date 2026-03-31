@@ -1,0 +1,15 @@
+<div class="space-y-4">
+  <div class="flex items-center gap-2">
+    <%= link_to @user.profile&.display_name || "Anonymous", user_path(@user),
+          class: "text-amber-700 hover:underline font-medium" %>
+    <span class="text-stone-500">· Following</span>
+  </div>
+
+  <% if @users.any? %>
+    <div class="space-y-2">
+      <%= render @users %>
+    </div>
+  <% else %>
+    <p class="text-sm text-stone-500">Not following anyone yet.</p>
+  <% end %>
+</div>
