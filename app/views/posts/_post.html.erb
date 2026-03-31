@@ -54,4 +54,17 @@
       <% end %>
     </div>
   <% end %>
+  <%# Reply count — only show on top level posts %>
+    <% unless post.parent_id? || local_assigns[:hide_reply_link] %>
+    <div class="pt-2 border-t border-stone-100">
+        <%= link_to post_path(post), class: "text-xs text-stone-400 hover:text-amber-700" do %>
+        <% reply_count = post.replies.count %>
+        <% if reply_count > 0 %>
+            View <%= pluralize(reply_count, "reply") %> →
+        <% else %>
+            Reply →
+        <% end %>
+        <% end %>
+    </div>
+    <% end %>
 </div>
