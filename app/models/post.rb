@@ -16,4 +16,22 @@ class Post < ApplicationRecord
 
   validates :body, presence: true
   validates :post_type, presence: true
+
+  after_create :extract_tags
+
+  private
+
+  def extract_tags
+    # Extract @username tags
+    body.scan(/@(\S+)/).flatten.each do |name|
+      profile = Profile.find_by("lower(display_name) = ?", name.downcase)
+      user_tags.create(tagged_user: profile.user) if profile
+    end
+
+    # Extract $catname tags — handles names with spaces by matching until end or next trigger
+    body.scan(/\$([^@$\n]+?)(?=\s*[@$]|\s*$)/).flatten.each do |name|
+      cat = Cat.find_by("lower(name) = ?", name.strip.downcase)
+      cat_tags.create(cat: cat) if cat
+    end
+  end
 end

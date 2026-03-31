@@ -1,15 +1,25 @@
 <h1 class="text-xl font-bold mb-6">New Post</h1>
-<%= form_with model: @post do |f| %>
+<%= form_with model: @post, multipart: true do |f| %>
   <div class="space-y-4">
-    <div>
-      <%= f.text_area :body, placeholder: "What's happening in the neighborhood?", rows: 4,
+    <div class="relative" data-controller="mention">
+      <%= f.text_area :body,
+            placeholder: "What's happening? Use @ to tag a person, $ to tag a cat",
+            rows: 4,
+            data: {
+              mention_target: "input",
+              action: "input->mention#onInput keydown->mention#onKeydown"
+            },
             class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+      <div data-mention-target="dropdown"
+           class="hidden absolute z-10 bg-white border border-stone-200 rounded shadow-lg w-64 mt-1">
+      </div>
     </div>
     <div>
       <%= f.label :photos, "Photos", class: "block text-sm font-medium mb-1" %>
       <%= f.file_field :photos, multiple: true, accept: "image/*",
             class: "text-sm text-stone-600" %>
     </div>
-    <%= f.submit "Post", class: "bg-amber-700 text-white px-4 py-2 rounded text-sm hover:bg-amber-800" %>
+    <%= f.submit "Post",
+          class: "bg-amber-700 text-white px-4 py-2 rounded text-sm hover:bg-amber-800" %>
   </div>
 <% end %>

@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
   root "posts#index"
+
+  namespace :autocomplete do
+    get :users
+    get :cats
+  end
+
   resource :session
   resources :passwords, param: :token
   resources :users, only: [:new, :create, :show] do
