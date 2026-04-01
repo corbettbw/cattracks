@@ -24,25 +24,23 @@
 
     <p class="text-stone-800"><%= format_post_body(post) %></p>
 
-  <% if post.sighting? && post.sighting %>
-    <% sighting = post.sighting %>
-    <% if sighting.photo.attached? %>
-      <%= link_to cat_sighting_path(sighting.cat, sighting) do %>
-        <%= image_tag sighting.photo, class: "w-full rounded-lg object-cover max-h-72 cursor-pointer" %>
-      <% end %>
+    <%# Sighting photo %>
+    <% if post.sighting? && post.sighting %>
+        <% sighting = post.sighting %>
+        <% if sighting.photo.attached? %>
+            <%= link_to url_for(sighting.photo), target: "_blank" do %>
+            <%= image_tag sighting.photo, class: "w-full rounded-lg object-cover max-h-72 cursor-pointer" %>
+            <% end %>
+        <% end %>
     <% end %>
-  <% end %>
 
+    <%# Regular post photos %>
     <% if (post.microblog? || post.new_cat?) && post.photos.attached? %>
     <div class="flex gap-2 flex-wrap mt-2">
         <% post.photos.each do |photo| %>
-        <% if post.cats.first %>
-            <%= link_to cat_path(post.cats.first) do %>
-            <%= image_tag photo, class: "w-full rounded-lg object-cover max-h-72 cursor-pointer" %>
+            <%= link_to url_for(photo), target: "_blank" do %>
+                <%= image_tag photo, class: "w-full rounded-lg object-cover max-h-72 cursor-pointer" %>
             <% end %>
-        <% else %>
-            <%= image_tag photo, class: "w-full rounded-lg object-cover max-h-72" %>
-        <% end %>
         <% end %>
     </div>
     <% end %>

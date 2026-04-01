@@ -41,7 +41,9 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+function initSightingPickerMap() {
+  const el = document.getElementById("sighting-map");
+  if (!el || el._leaflet_id) return;
     const latField = document.getElementById("sighting-lat");
     const lngField = document.getElementById("sighting-lng");
     const hint = document.getElementById("pin-hint");
@@ -66,5 +68,8 @@
       lngField.value = lng.toFixed(6);
       hint.textContent = `📍 ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
     });
-  });
+  }
+
+    document.addEventListener("turbo:load", initSightingPickerMap);
+    document.addEventListener("DOMContentLoaded", initSightingPickerMap);
 </script>

@@ -1,7 +1,9 @@
 <div class="text-sm bg-stone-50 border border-stone-200 rounded-lg overflow-hidden">
   <div class="p-3 space-y-2">
     <% if sighting.photo.attached? %>
-      <%= image_tag sighting.photo, class: "w-full rounded object-cover max-h-48" %>
+        <%= link_to url_for(sighting.photo), target: "_blank" do %>
+            <%= image_tag sighting.photo, class: "w-full rounded object-cover max-h-48 cursor-pointer" %>
+        <% end %>
     <% end %>
 
     <% if sighting.body.present? %>
