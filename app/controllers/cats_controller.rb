@@ -1,5 +1,5 @@
 class CatsController < ApplicationController
-  before_action :set_cat, only: [:show, :edit, :update, :destroy, :claim, :leave]
+  before_action :set_cat, only: [:show, :edit, :update, :destroy, :claim, :leave, :follow, :unfollow]
 
   def index
     @cats = Cat.all
@@ -52,7 +52,7 @@ class CatsController < ApplicationController
       redirect_to @cat, notice: "You're now a caregiver for #{@cat.name}!"
     end
   end
-  
+
   def leave
     relationship = Current.user.care_relationships.find_by(cat: @cat)
     if relationship
@@ -62,6 +62,22 @@ class CatsController < ApplicationController
       redirect_to @cat, alert: "You weren't listed as a caregiver for #{@cat.name}"
     end
   end
+
+  def follow
+    Current.user.cat_follows.find_or_create_by(cat: @cat)
+    redirect_to @cat, notice: "You're now following #{@cat.name}"
+  end
+
+  def unfollow
+    follow = Current.user.cat_follows.find_by(cat: @cat)
+    if follow
+      follow.destroy
+      redirect_to @cat, notice: "You've unfollowed #{@cat.name}"
+    else
+      redirect_to @cat
+    end
+  end
+
   private
 
   def set_cat

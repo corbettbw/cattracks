@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "browse", to: "browse#index", as: :browse
+  get "search", to: "search#index", as: :search
   root "posts#index"
 
   namespace :autocomplete do
@@ -21,6 +23,8 @@ Rails.application.routes.draw do
     member do
       post :claim
       delete :leave
+      post :follow
+      delete :unfollow
     end
     resources :sightings, only: [:new, :create, :destroy, :show, :edit, :update]
   end

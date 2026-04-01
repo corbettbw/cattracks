@@ -1,0 +1,128 @@
+<div class="space-y-6">
+  <h1 class="text-xl font-bold">Browse Your Neighborhood</h1>
+
+  <%= form_with url: browse_path, method: :get do |f| %>
+    <div class="flex gap-2 mb-6">
+      <%= f.text_field :zip, value: @zip,
+            placeholder: "Enter a zip code...",
+            class: "w-40 border border-stone-300 rounded px-3 py-2 text-sm" %>
+      <%= f.submit "Browse",
+            class: "bg-amber-700 text-white px-4 py-2 rounded text-sm hover:bg-amber-800" %>
+    </div>
+  <% end %>
+
+  <% if @zip.present? %>
+    <%# Map %>
+    <% if @cat_pins.any? %>
+      <div
+        id="browse-map"
+        style="height: 256px; min-height: 256px;"
+        class="w-full rounded-lg overflow-hidden border border-stone-200"
+        data-pins="<%= @cat_pins.to_json %>"
+        data-center-lat="<%= @map_center&.lat || 33.4484 %>"
+        data-center-lng="<%= @map_center&.lng || -112.0740 %>">
+      </div>
+    <% else %>
+      <div class="h-24 flex items-center justify-center border border-stone-200 rounded-lg">
+        <p class="text-sm text-stone-400">No sightings in this area yet.</p>
+      </div>
+    <% end %>
+
+    <%# Results %>
+    <div class="grid grid-cols-2 gap-6">
+      <%# People %>
+      <div>
+        <h2 class="font-semibold mb-3">
+          People
+          <span class="text-stone-400 font-normal text-sm">(<%= @people.count %>)</span>
+        </h2>
+        <% if @people.any? %>
+          <div class="space-y-2">
+            <% @people.each do |profile| %>
+              <%= link_to user_path(profile.user), class: "flex items-center gap-3 p-3 bg-white border border-stone-200 rounded-lg hover:border-amber-300 transition-colors" do %>
+                <% if profile.photo.attached? %>
+                  <%= image_tag profile.photo, class: "w-10 h-10 rounded-full object-cover flex-shrink-0" %>
+                <% else %>
+                  <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">🐾</div>
+                <% end %>
+                <div>
+                  <p class="text-sm font-medium"><%= profile.display_name %></p>
+                  <p class="text-xs text-stone-400"><%= profile.zip_code %></p>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm text-stone-500">No people in this zip code yet.</p>
+        <% end %>
+      </div>
+
+      <%# Cats %>
+      <div>
+        <h2 class="font-semibold mb-3">
+          Cats
+          <span class="text-stone-400 font-normal text-sm">(<%= @cats.count %>)</span>
+        </h2>
+        <% if @cats.any? %>
+          <div class="space-y-2">
+            <% @cats.each do |cat| %>
+              <%= link_to cat_path(cat), class: "flex items-center gap-3 p-3 bg-white border border-stone-200 rounded-lg hover:border-amber-300 transition-colors" do %>
+                <% if cat.profile_photo.attached? %>
+                  <%= image_tag cat.profile_photo, class: "w-10 h-10 rounded-full object-cover flex-shrink-0" %>
+                <% else %>
+                  <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">🐈</div>
+                <% end %>
+                <div>
+                  <p class="text-sm font-medium"><%= cat.name %></p>
+                  <p class="text-xs text-stone-400 capitalize"><%= cat.status %></p>
+                  <% last = cat.sightings.order(created_at: :desc).first %>
+                  <% if last %>
+                    <p class="text-xs text-stone-400">Last seen <%= time_ago_in_words(last.created_at) %> ago</p>
+                  <% end %>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-sm text-stone-500">No cats spotted in this zip code yet.</p>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  function initBrowseMap() {
+    const el = document.getElementById("browse-map");
+    if (!el || el._leaflet_id) return;
+
+    const pins = JSON.parse(el.dataset.pins);
+    const centerLat = parseFloat(el.dataset.centerLat);
+    const centerLng = parseFloat(el.dataset.centerLng);
+
+    const map = L.map("browse-map", {
+      zoomControl: true,
+      dragging: true,
+      scrollWheelZoom: false
+    }).setView([centerLat, centerLng], 13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap"
+    }).addTo(map);
+
+    pins.forEach(function(pin) {
+      const marker = L.marker([pin.lat, pin.lng]).addTo(map);
+      marker.bindPopup(`<a href="${pin.url}" style="font-size:13px;color:#b45309;font-weight:500">${pin.name}</a>`);
+    });
+
+    if (pins.length > 1) {
+      const bounds = L.latLngBounds(pins.map(p => [p.lat, p.lng]));
+      map.fitBounds(bounds, { padding: [30, 30] });
+    }
+  }
+
+  document.addEventListener("turbo:load", initBrowseMap);
+  document.addEventListener("DOMContentLoaded", initBrowseMap);
+</script>

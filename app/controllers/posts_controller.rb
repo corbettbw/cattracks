@@ -5,14 +5,14 @@ class PostsController < ApplicationController
     @mode = params[:mode] == "following" ? :following : :local
 
     @posts = if @mode == :following
-      followed_ids = Current.user.following.pluck(:id)
-      if followed_ids.any?
-        Post.where(user_id: followed_ids)
-            .where(parent_id: nil)
-            .order(created_at: :desc)
-      else
-        Post.none
-      end
+      followed_user_ids = Current.user.following.pluck(:id)
+      followed_cat_ids = Current.user.followed_cats.pluck(:id)
+
+      user_post_ids = followed_user_ids.any? ? Post.where(user_id: followed_user_ids).pluck(:id) : []
+      cat_sighting_post_ids = followed_cat_ids.any? ? Post.joins(:cat_tags).where(cat_tags: { cat_id: followed_cat_ids }, post_type: 1).pluck(:id) : []
+
+      all_ids = (user_post_ids + cat_sighting_post_ids).uniq
+      all_ids.any? ? Post.where(id: all_ids).where(parent_id: nil).order(created_at: :desc) : Post.none
     else
       user_zip = Current.user.profile&.zip_code
       if user_zip.present?

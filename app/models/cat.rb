@@ -6,6 +6,10 @@ class Cat < ApplicationRecord
     has_many :sightings, dependent: :destroy
     has_many :cat_tags, dependent: :destroy
     has_many :posts, through: :cat_tags
+    
+    has_many :cat_follows, dependent: :destroy
+    has_many :followers, through: :cat_follows, source: :user
+
     has_one_attached :profile_photo
     has_many_attached :pictures
 
@@ -23,7 +27,7 @@ class Cat < ApplicationRecord
         post_type: :new_cat
         )
         post.cat_tags.create!(cat: self)
-        
+
         if profile_photo.attached?
             post.photos.attach(profile_photo.blob)
         end

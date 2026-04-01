@@ -19,6 +19,9 @@ class User < ApplicationRecord
   has_many :reverse_follows, class_name: "Follow", foreign_key: :followed_id, dependent: :destroy
   has_many :followers, through: :reverse_follows, source: :follower
   
+  has_many :cat_follows, dependent: :destroy
+  has_many :followed_cats, through: :cat_follows, source: :cat
+  
   private
 
   def initialize_profile

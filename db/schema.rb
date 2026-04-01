@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_31_223605) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_01_004104) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -50,6 +50,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_31_223605) do
     t.datetime "updated_at", null: false
     t.index ["cat_id"], name: "index_care_relationships_on_cat_id"
     t.index ["user_id"], name: "index_care_relationships_on_user_id"
+  end
+
+  create_table "cat_follows", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "cat_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cat_id"], name: "index_cat_follows_on_cat_id"
+    t.index ["user_id"], name: "index_cat_follows_on_user_id"
   end
 
   create_table "cat_tags", force: :cascade do |t|
@@ -141,6 +150,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_31_223605) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "care_relationships", "cats"
   add_foreign_key "care_relationships", "users"
+  add_foreign_key "cat_follows", "cats"
+  add_foreign_key "cat_follows", "users"
   add_foreign_key "cat_tags", "cats"
   add_foreign_key "cat_tags", "posts"
   add_foreign_key "cats", "users", column: "created_by"

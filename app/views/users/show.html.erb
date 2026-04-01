@@ -61,7 +61,28 @@
       </div>
     </div>
   <% end %>
-
+    <%# Cats they follow %>
+    <% followed_cats = @user.followed_cats.includes(:profile_photo_attachment) %>
+    <% if followed_cats.any? %>
+    <div>
+        <h2 class="font-semibold mb-3">Following cats</h2>
+        <div class="grid grid-cols-2 gap-3">
+        <% followed_cats.each do |cat| %>
+            <%= link_to cat_path(cat), class: "flex items-center gap-3 p-3 bg-white border border-stone-200 rounded-lg hover:border-amber-300 transition-colors" do %>
+            <% if cat.profile_photo.attached? %>
+                <%= image_tag cat.profile_photo, class: "w-10 h-10 rounded-full object-cover" %>
+            <% else %>
+                <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">🐈</div>
+            <% end %>
+            <div>
+                <p class="text-sm font-medium"><%= cat.name %></p>
+                <p class="text-xs text-stone-400 capitalize"><%= cat.status %></p>
+            </div>
+            <% end %>
+        <% end %>
+        </div>
+    </div>
+    <% end %>
   <%# Their posts %>
   <div>
     <h2 class="font-semibold mb-3">Posts</h2>
