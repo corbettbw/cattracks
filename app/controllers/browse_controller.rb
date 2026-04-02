@@ -8,25 +8,15 @@ class BrowseController < ApplicationController
                        .includes(:user, photo_attachment: :blob)
                        .limit(20)
 
-      recent_sightings = Sighting.joins(:cat)
-                                  .order(created_at: :desc)
-
-      cat_ids_in_zip = recent_sightings.select { |s|
-        s.lat.present? && s.lng.present?
-      }.group_by(&:cat_id).keys.select { |cat_id|
-        last = Sighting.where(cat_id: cat_id).order(created_at: :desc).first
-        # Check if last sighting is near zip — we use cat tags or just include all for now
-        true
-      }
+      cat_ids_in_zip = Sighting.where(zip_code: @zip).pluck(:cat_id).uniq
 
       @cats = Cat.where(id: cat_ids_in_zip)
                  .includes(:sightings, profile_photo_attachment: :blob)
                  .limit(20)
 
-      # Find most recent sighting overall to center map
-      @map_center = Sighting.order(created_at: :desc).first
+      @map_center = Sighting.where(zip_code: @zip).order(created_at: :desc).first
       @cat_pins = @cats.filter_map do |cat|
-        last_sighting = cat.sightings.order(created_at: :desc).first
+        last_sighting = cat.sightings.where(zip_code: @zip).order(created_at: :desc).first
         next unless last_sighting
         {
           name: cat.name,
