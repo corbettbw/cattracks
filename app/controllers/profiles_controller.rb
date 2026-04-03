@@ -8,9 +8,13 @@ class ProfilesController < ApplicationController
   end
 
   def update
+    @show_errors = true
     if @profile.update(profile_params)
+      Current.user.update(
+        marketing_opt_in: params[:marketing_opt_in] == "on"
+      )
       if @profile.display_name.present? && @profile.zip_code.present?
-        redirect_to root_path, notice: "Profile saved! Welcome to Cat Tracks."
+        redirect_to root_path, notice: "Profile saved!"
       else
         redirect_to edit_profile_path, alert: "Please fill in your display name and zip code to continue."
       end

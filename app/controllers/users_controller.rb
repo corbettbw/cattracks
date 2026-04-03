@@ -8,6 +8,10 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
+      @user.update(
+        marketing_opt_in: params[:marketing_opt_in] == "on",
+        agreed_to_tos: params[:agreed_to_tos] == "on"
+      )
       start_new_session_for @user
       redirect_to edit_profile_path, notice: "Welcome! Please complete your profile."
     else

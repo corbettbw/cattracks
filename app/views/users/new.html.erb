@@ -32,6 +32,28 @@
         <%= f.password_field :password_confirmation, required: true,
               class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
       </div>
+
+      <%# ToS agreement %>
+      <div class="flex items-start gap-2">
+        <input type="checkbox" name="agreed_to_tos" id="agreed_to_tos" required
+               class="mt-0.5 flex-shrink-0">
+        <label for="agreed_to_tos" class="text-sm text-stone-600">
+          I agree to the
+          <%= link_to "Terms of Service", tos_path, target: "_blank", class: "text-amber-700 hover:underline" %>
+          and
+          <%= link_to "Privacy Policy", privacy_policy_path, target: "_blank", class: "text-amber-700 hover:underline" %>.
+        </label>
+      </div>
+
+      <%# Marketing opt-in %>
+      <div class="flex items-start gap-2">
+        <input type="checkbox" name="marketing_opt_in" id="marketing_opt_in"
+               class="mt-0.5 flex-shrink-0">
+        <label for="marketing_opt_in" class="text-sm text-stone-600">
+          I'd like to receive special offers from Cat Tracks and its trusted pet brand partners.
+        </label>
+      </div>
+
       <%= f.submit "Create account",
             class: "w-full bg-amber-700 text-white py-2 rounded text-sm font-medium hover:bg-amber-800 mt-2" %>
     </div>

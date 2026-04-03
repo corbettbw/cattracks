@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   get "search", to: "search#index", as: :search
   root "posts#index"
 
+  get "/tos", to: "pages#tos", as: :tos
+  get "/privacy", to: "pages#privacy_policy", as: :privacy_policy
+  get "/support", to: "pages#support", as: :support
+
   resources :notifications, only: [:index]
   
   namespace :autocomplete do

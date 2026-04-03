@@ -50,6 +50,23 @@
         <% end %>
         <%= f.file_field :photo, accept: "image/*", class: "text-sm text-stone-600" %>
       </div>
+
+      <%# Legal & Communications %>
+      <div class="pt-4 border-t border-stone-200">
+        <h2 class="text-sm font-semibold text-stone-700 mb-3">Legal & Communications</h2>
+        
+        <div class="space-y-3">
+          <div class="flex items-start gap-2">
+            <%= check_box_tag :marketing_opt_in, "on",
+                  Current.user.marketing_opt_in,
+                  id: "marketing_opt_in",
+                  class: "mt-0.5 flex-shrink-0" %>
+            <label for="marketing_opt_in" class="text-sm text-stone-600">
+              I'd like to receive special offers from Cat Tracks and its trusted pet brand partners.
+            </label>
+          </div>
+        </div>
+      </div>
       <%= f.submit Current.user.profile&.display_name.present? ? "Save changes" : "Let's go →",
             class: "w-full bg-amber-700 text-white py-2 rounded text-sm font-medium hover:bg-amber-800 mt-2" %>
     </div>
