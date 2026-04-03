@@ -1,12 +1,18 @@
 Rails.application.routes.draw do
-  get "notifications/index"
-  get "browse", to: "browse#index", as: :browse
-  get "search", to: "search#index", as: :search
   root "posts#index"
 
+  get "notifications/index"
+
+  get "browse", to: "browse#index", as: :browse
+  get "search", to: "search#index", as: :search
+  
   get "/tos", to: "pages#tos", as: :tos
   get "/privacy", to: "pages#privacy_policy", as: :privacy_policy
-  get "/support", to: "pages#support", as: :support
+
+  get "/support", to: "support#index", as: :support
+  post "/support/feedback", to: "support#feedback", as: :support_feedback
+  
+  post "/webhooks/stripe", to: "webhooks#stripe"
 
   resources :notifications, only: [:index]
   

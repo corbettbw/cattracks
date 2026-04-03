@@ -37,6 +37,17 @@
           <strong class="text-stone-800"><%= @following_count %></strong> following
         <% end %>
       </div>
+      <%# Badges %>
+      <% if @user.badges.any? %>
+        <div class="flex gap-2 flex-wrap mt-2">
+          <% @user.badges.each do |badge| %>
+            <span title="<%= badge.description %>"
+                  class="inline-flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-800 text-xs px-2 py-0.5 rounded-full">
+              <%= badge.icon %> <%= badge.name %>
+            </span>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
 

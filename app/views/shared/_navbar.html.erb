@@ -22,6 +22,7 @@
 
 <%# Right %>
   <div class="flex items-center gap-4 text-sm w-1/4 justify-end">
+    <%= link_to "Support Us", support_path, class: "text-sm hover:text-amber-200" %>
     <% if authenticated? %>
       <% unread_count = Current.user.notifications.unread.count %>
       <%= link_to notifications_path, class: "relative hover:text-amber-200" do %>

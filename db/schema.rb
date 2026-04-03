@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_03_011524) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_03_192514) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_03_011524) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "badges", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.string "icon"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "care_relationships", force: :cascade do |t|
@@ -144,6 +152,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_03_011524) do
     t.index ["user_id"], name: "index_sightings_on_user_id"
   end
 
+  create_table "user_badges", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "badge_id", null: false
+    t.datetime "awarded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["badge_id"], name: "index_user_badges_on_badge_id"
+    t.index ["user_id"], name: "index_user_badges_on_user_id"
+  end
+
   create_table "user_tags", force: :cascade do |t|
     t.bigint "post_id", null: false
     t.integer "tagged_user"
@@ -179,6 +197,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_03_011524) do
   add_foreign_key "sessions", "users"
   add_foreign_key "sightings", "cats"
   add_foreign_key "sightings", "users"
+  add_foreign_key "user_badges", "badges"
+  add_foreign_key "user_badges", "users"
   add_foreign_key "user_tags", "posts"
   add_foreign_key "user_tags", "users", column: "tagged_user"
 end

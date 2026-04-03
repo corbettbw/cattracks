@@ -10,6 +10,9 @@
       <%= link_to user_path(post.user), class: "font-medium text-stone-700 hover:text-amber-700" do %>
         <%= profile&.display_name || "Anonymous" %>
       <% end %>
+      <% post.user.badges.each do |badge| %>
+        <span title="<%= badge.description %>" class="text-xs"><%= badge.icon %></span>
+      <% end %>
     <% else %>
       <span class="font-medium text-stone-700">Anonymous</span>
     <% end %>

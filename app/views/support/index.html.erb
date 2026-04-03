@@ -1,0 +1,110 @@
+<div style="margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); padding-left: 2rem; padding-right: 2rem;">
+  <div class="max-w-5xl mx-auto space-y-8 py-8">
+
+    <%# Title %>
+    <div class="text-center">
+      <h1 class="text-3xl font-bold mb-2">Support Cat Tracks</h1>
+      <p class="text-stone-500">Cat Tracks is a community project built by cat lovers, for cat lovers. Your support keeps it running and growing.</p>
+    </div>
+
+    <%# Badges — full width across the top %>
+    <div class="bg-white border border-stone-200 rounded-xl p-6">
+      <h2 class="text-lg font-bold mb-4">Badges you can earn</h2>
+      <div class="grid grid-cols-5 gap-3">
+        <% Badge.all.each do |badge| %>
+          <div class="flex flex-col items-center text-center p-3 bg-stone-50 rounded-lg">
+            <span class="text-3xl mb-1"><%= badge.icon %></span>
+            <p class="text-sm font-medium"><%= badge.name %></p>
+            <p class="text-xs text-stone-500 mt-1"><%= badge.description %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <%# Two column layout %>
+    <div class="grid grid-cols-2 gap-6 items-start">
+
+      <%# Left: Tip jar %>
+      <div class="bg-white border border-stone-200 rounded-xl p-6 space-y-4">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">⭐</span>
+          <div>
+            <h2 class="text-xl font-bold">Become an Early Backer</h2>
+            <p class="text-sm text-stone-500">Support us during our early days and earn the exclusive Early Backer badge on your profile.</p>
+          </div>
+        </div>
+
+        <% if @stripe_configured %>
+          <div class="grid grid-cols-3 gap-3">
+            <%= form_with url: "#", method: :post, class: "contents" do |f| %>
+              <button type="submit" class="border-2 border-amber-700 text-amber-700 rounded-lg p-4 text-center hover:bg-amber-50 transition-colors">
+                <div class="text-2xl font-bold">$5</div>
+                <div class="text-xs text-stone-500 mt-1">Supporter</div>
+              </button>
+            <% end %>
+            <%= form_with url: "#", method: :post, class: "contents" do |f| %>
+              <button type="submit" class="border-2 border-amber-700 bg-amber-700 text-white rounded-lg p-4 text-center hover:bg-amber-800 transition-colors">
+                <div class="text-2xl font-bold">$10</div>
+                <div class="text-xs text-amber-100 mt-1">Champion</div>
+              </button>
+            <% end %>
+            <%= form_with url: "#", method: :post, class: "contents" do |f| %>
+              <button type="submit" class="border-2 border-amber-700 text-amber-700 rounded-lg p-4 text-center hover:bg-amber-50 transition-colors">
+                <div class="text-2xl font-bold">$25</div>
+                <div class="text-xs text-stone-500 mt-1">Guardian</div>
+              </button>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 text-center">
+            <p class="text-sm text-amber-800 font-medium">Payment support coming soon!</p>
+            <p class="text-sm text-amber-700 mt-1">We're setting up our payment system. Check back soon to support Cat Tracks and earn your Early Backer badge.</p>
+          </div>
+        <% end %>
+      </div>
+
+      <%# Right: Feedback form %>
+      <div class="bg-white border border-stone-200 rounded-xl p-6 space-y-4">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">💬</span>
+          <div>
+            <h2 class="text-xl font-bold">Send us feedback</h2>
+            <p class="text-sm text-stone-500">Have a suggestion, found a bug, or just want to say hi? We'd love to hear from you.</p>
+          </div>
+        </div>
+
+        <%= form_with url: support_feedback_path, method: :post, multipart: true do |f| %>
+          <div class="space-y-3">
+            <div>
+              <%= f.label :name, class: "block text-sm font-medium mb-1" %>
+              <%= f.text_field :name,
+                    value: Current.user.profile&.display_name,
+                    class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+            </div>
+            <div>
+              <%= f.label :email, class: "block text-sm font-medium mb-1" %>
+              <%= f.email_field :email,
+                    value: Current.user.email_address,
+                    class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+            </div>
+            <div>
+              <%= f.label :message, class: "block text-sm font-medium mb-1" %>
+              <%= f.text_area :message, rows: 8,
+                    placeholder: "Tell us what you think...",
+                    class: "w-full border border-stone-300 rounded px-3 py-2 text-sm" %>
+            </div>
+            <div>
+              <%= f.label :screenshots, "Screenshots (optional)", class: "block text-sm font-medium mb-1" %>
+              <%= f.file_field :screenshots, multiple: true, accept: "image/*",
+                    class: "text-sm text-stone-600" %>
+              <p class="text-xs text-stone-400 mt-1">Attach screenshots of any bugs you've encountered.</p>
+            </div>
+            <%= f.submit "Send feedback",
+                  class: "w-full bg-amber-700 text-white px-4 py-2 rounded text-sm hover:bg-amber-800" %>
+          </div>
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+</div>

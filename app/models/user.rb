@@ -23,6 +23,17 @@ class User < ApplicationRecord
   has_many :cat_follows, dependent: :destroy
   has_many :followed_cats, through: :cat_follows, source: :cat
 
+  has_many :user_badges, dependent: :destroy
+  has_many :badges, through: :user_badges
+
+  def award_badge(name)
+    badge = Badge.find_by(name: name)
+    return unless badge
+    user_badges.find_or_create_by(badge: badge) do |ub|
+      ub.awarded_at = Time.current
+    end
+  end
+
   def notify(actor:, notifiable:, type:)
     return if actor == self # don't notify yourself
       notifications.create!(
