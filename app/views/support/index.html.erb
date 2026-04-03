@@ -95,8 +95,12 @@
             </div>
             <div>
               <%= f.label :screenshots, "Screenshots (optional)", class: "block text-sm font-medium mb-1" %>
-              <%= f.file_field :screenshots, multiple: true, accept: "image/*",
-                    class: "text-sm text-stone-600" %>
+              <label class="flex items-center gap-2 cursor-pointer w-fit">
+                <span class="bg-stone-100 hover:bg-stone-200 border border-stone-300 text-stone-700 text-sm px-3 py-1.5 rounded transition-colors">
+                  📎 Attach screenshots
+                </span>
+                <%= f.file_field :screenshots, multiple: true, accept: "image/*", class: "sr-only" %>
+              </label>
               <p class="text-xs text-stone-400 mt-1">Attach screenshots of any bugs you've encountered.</p>
             </div>
             <%= f.submit "Send feedback",
