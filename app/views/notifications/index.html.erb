@@ -1,0 +1,55 @@
+<div class="space-y-4">
+  <h1 class="text-xl font-bold">Notifications</h1>
+
+  <% if @notifications.any? %>
+    <div class="space-y-2">
+      <% @notifications.each do |notification| %>
+        <div class="bg-white border border-stone-200 rounded-lg p-4 flex items-start gap-3 <%= notification.read? ? 'opacity-60' : '' %>">
+          <%# Actor avatar %>
+          <% if notification.actor.profile&.photo&.attached? %>
+            <%= image_tag notification.actor.profile.photo,
+                  class: "w-9 h-9 rounded-full object-cover flex-shrink-0" %>
+          <% else %>
+            <div class="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">🐾</div>
+          <% end %>
+
+          <div class="flex-1 text-sm">
+            <% actor_name = notification.actor.profile&.display_name || "Someone" %>
+            <% case notification.notification_type %>
+            <% when "new_follower" %>
+              <p>
+                <%= link_to actor_name, user_path(notification.actor), class: "font-medium hover:text-amber-700" %>
+                started following you.
+              </p>
+            <% when "post_reply" %>
+              <p>
+                <%= link_to actor_name, user_path(notification.actor), class: "font-medium hover:text-amber-700" %>
+                replied to your
+                <%= link_to "post", post_path(notification.notifiable.parent), class: "text-amber-700 hover:underline" %>.
+              </p>
+              <p class="text-stone-400 mt-1 truncate"><%= notification.notifiable.body %></p>
+            <% when "mention" %>
+              <p>
+                <%= link_to actor_name, user_path(notification.actor), class: "font-medium hover:text-amber-700" %>
+                mentioned you in a
+                <%= link_to "post", post_path(notification.notifiable), class: "text-amber-700 hover:underline" %>.
+              </p>
+              <p class="text-stone-400 mt-1 truncate"><%= notification.notifiable.body %></p>
+            <% when "cat_sighting" %>
+              <p>
+                <%= link_to actor_name, user_path(notification.actor), class: "font-medium hover:text-amber-700" %>
+                spotted
+                <%= link_to notification.notifiable.cat.name,
+                      cat_sighting_path(notification.notifiable.cat, notification.notifiable),
+                      class: "text-amber-700 hover:underline font-medium" %>.
+              </p>
+            <% end %>
+            <p class="text-stone-400 text-xs mt-1"><%= time_ago_in_words(notification.created_at) %> ago</p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-sm text-stone-500">No notifications yet.</p>
+  <% end %>
+</div>

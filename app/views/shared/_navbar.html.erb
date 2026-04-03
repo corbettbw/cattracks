@@ -20,10 +20,26 @@
     <% end %>
   </div>
 
-  <%# Right %>
+<%# Right %>
   <div class="flex items-center gap-4 text-sm w-1/4 justify-end">
     <% if authenticated? %>
-      <%= link_to "My Profile", user_path(Current.user), class: "hover:text-amber-200" %>
+      <% unread_count = Current.user.notifications.unread.count %>
+      <%= link_to notifications_path, class: "relative hover:text-amber-200" do %>
+        🔔
+        <% if unread_count > 0 %>
+          <span class="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center leading-none">
+            <%= unread_count > 9 ? "9+" : unread_count %>
+          </span>
+        <% end %>
+      <% end %>
+      <%= link_to user_path(Current.user), class: "flex items-center gap-2 hover:text-amber-200" do %>
+        <% if Current.user.profile&.photo&.attached? %>
+          <%= image_tag Current.user.profile.photo, class: "w-7 h-7 rounded-full object-cover" %>
+        <% else %>
+          <div class="w-7 h-7 rounded-full bg-amber-600 flex items-center justify-center text-xs">🐾</div>
+        <% end %>
+        <span class="text-sm"><%= "My Profile" %></span>
+      <% end %>      
       <%= button_to "Sign out", session_path, method: :delete,
             data: { turbo: false },
             class: "hover:text-amber-200 bg-transparent border-0 cursor-pointer p-0 text-sm text-amber-50" %>

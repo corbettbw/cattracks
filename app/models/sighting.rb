@@ -11,8 +11,16 @@ class Sighting < ApplicationRecord
   after_create :generate_post
   before_create :set_zip_code
 
+  after_create :notify_cat_followers
+
   private
   
+  def notify_cat_followers
+    cat.followers.each do |follower|
+      follower.notify(actor: user, notifiable: self, type: :cat_sighting)
+    end
+  end
+
   def set_zip_code
     results = Geocoder.search([lat, lng])
     self.zip_code = results.first&.postal_code

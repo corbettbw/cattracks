@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   has_secure_password
   has_many :sessions, dependent: :destroy
+  has_many :notifications, dependent: :destroy
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
@@ -21,6 +22,16 @@ class User < ApplicationRecord
   
   has_many :cat_follows, dependent: :destroy
   has_many :followed_cats, through: :cat_follows, source: :cat
+
+  def notify(actor:, notifiable:, type:)
+    return if actor == self # don't notify yourself
+      notifications.create!(
+        actor: actor,
+        notifiable: notifiable,
+        notification_type: type,
+        read: false
+      )
+  end
   
   private
 

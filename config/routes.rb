@@ -1,8 +1,11 @@
 Rails.application.routes.draw do
+  get "notifications/index"
   get "browse", to: "browse#index", as: :browse
   get "search", to: "search#index", as: :search
   root "posts#index"
 
+  resources :notifications, only: [:index]
+  
   namespace :autocomplete do
     get :users
     get :cats

@@ -19,7 +19,25 @@ class Post < ApplicationRecord
 
   after_create :extract_tags
 
+  after_create :notify_parent_author
+  after_create :notify_mentions
+
   private
+
+  def notify_parent_author
+    return unless parent_id?
+    return unless parent.user
+    parent.user.notify(actor: user, notifiable: self, type: :post_reply)
+  end
+
+  def notify_mentions
+    return unless body.present?
+    body.scan(/@(\S+)/).flatten.each do |name|
+      profile = Profile.find_by("lower(display_name) = ?", name.downcase)
+      next unless profile
+      profile.user.notify(actor: user, notifiable: self, type: :mention)
+    end
+  end
 
   def extract_tags
     # Extract @username tags
