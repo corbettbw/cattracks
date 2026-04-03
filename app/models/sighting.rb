@@ -13,7 +13,16 @@ class Sighting < ApplicationRecord
 
   after_create :notify_cat_followers
 
+  after_create :check_sighting_scout
+
+  
   private
+  
+  def check_sighting_scout
+    if user.sightings.count >= 10
+      user.award_badge("Sighting Scout")
+    end
+  end
   
   def notify_cat_followers
     cat.followers.each do |follower|

@@ -6,7 +6,15 @@ class Follow < ApplicationRecord
 
   after_create :notify_followed
 
+  after_create :check_community_pillar
+
   private
+
+  def check_community_pillar
+    if followed.followers.count >= 100
+      followed.award_badge("Community Pillar")
+    end
+  end
 
   def notify_followed
     followed.notify(actor: follower, notifiable: self, type: :new_follower)
