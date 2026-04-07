@@ -1,5 +1,5 @@
 class FeedbackMailer < ApplicationMailer
-  default to: "feedback@cattracks.org"
+  default to: "feedback@cattrackers.org"
 
   def feedback_email(name:, email:, message:, screenshots: nil)
     @name = name
@@ -13,9 +13,9 @@ class FeedbackMailer < ApplicationMailer
     end
     
     mail(
-      from: "noreply@cattracks.org",
+      from: "noreply@cattrackers.org",
       reply_to: email,
-      subject: "Cat Tracks Feedback from #{name}"
+      subject: "Cat Trackers Feedback from #{name}"
     )
   end
 end
