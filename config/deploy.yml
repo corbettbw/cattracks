@@ -12,6 +12,7 @@ servers:
 proxy:
   ssl: true
   host: cattrackers.org
+  app_port: 80
 
 # Credentials for your image host.
 registry:
