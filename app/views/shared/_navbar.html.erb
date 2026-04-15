@@ -13,9 +13,9 @@
       <%= form_with url: search_path, method: :get, class: "flex items-center w-full max-w-md" do |f| %>
         <%= f.text_field :q,
       placeholder: "Search people and cats...",
-      class: "text-stone-800 placeholder-stone-400 bg-amber-50 text-sm px-3 py-1.5 rounded-l w-full focus:outline-none focus:bg-white" %>
+      class: "text-stone-800 placeholder-stone-400 bg-amber-50 text-sm px-3 py-2 rounded-l w-full focus:outline-none focus:bg-white" %>
         <%= f.submit "🔍",
-              class: "bg-amber-600 hover:bg-amber-500 px-3 py-1.5 rounded-r text-sm cursor-pointer border-0" %>
+              class: "bg-amber-600 hover:bg-amber-500 px-3 py-2 rounded-r text-sm cursor-pointer border-0" %>
       <% end %>
     <% end %>
   </div>
