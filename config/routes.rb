@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   root "posts#index"
+  get "up" => "rails/health#show", as: :rails_health_check
 
   get "notifications/index"
 
@@ -11,7 +12,7 @@ Rails.application.routes.draw do
 
   get "/support", to: "support#index", as: :support
   post "/support/feedback", to: "support#feedback", as: :support_feedback
-  
+
   post "/webhooks/stripe", to: "webhooks#stripe"
 
   resources :notifications, only: [:index]

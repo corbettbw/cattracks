@@ -19,9 +19,9 @@
     <span>·</span>
     <span><%= time_ago_in_words(post.created_at) %> ago</span>
     <% if post.sighting? %>
-      <span class="ml-auto text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">sighting</span>
+      <span class="ml-auto text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full">sighting</span>
     <% elsif post.new_cat? %>
-      <span class="ml-auto text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">new cat</span>
+      <span class="ml-auto text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">new cat</span>
     <% end %>
   </div>
 
